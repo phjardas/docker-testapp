@@ -1,37 +1,24 @@
 #!/bin/bash
 
-VERSION=$1
+version=$1
 
-if [ -z "$VERSION" ]; then
+if [ -z "$version" ]; then
   echo "please specify the version as the first argument" >&2
   exit 1
 fi
 
-TAG=phjardas/testapp:${1:-latest}
-echo "Building $TAG"
+tags=
 
-PULL=
-PUSH=false
-
-while (($#)); do
-  case $1 in
-    --pull)
-      PULL="--pull"
-      ;;
-    --push)
-      PUSH=true
-      ;;
-    *)
-      echo "unknown argument: $1" >&2
-      exit 2
-  esac
-  shift
+for i in $(seq 0 9); do
+  tag=phjardas/testapp:${version}.${i}
+  echo && echo "=== Building $tag ==="
+  docker build --build-arg APP_VERSION=${version}.${i} --tag $tag .
+  tags=$"${tags} ${tag}"
 done
 
-docker build --tag $TAG $PULL .
-
-echo "Built $TAG"
-
-if [ "$PUSH" == "true" ]; then
-  docker push $TAG
-fi
+echo && echo "=== Built images ==="
+echo "Now run the following lines to push them to Docker Hub:"
+echo
+for tag in $tags; do
+  echo "docker push $tag";
+done
