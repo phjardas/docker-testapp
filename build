@@ -1,0 +1,37 @@
+#!/bin/bash
+
+VERSION=$1
+
+if [ -z "$VERSION" ]; then
+  echo "please specify the version as the first argument" >&2
+  exit 1
+fi
+
+TAG=phjardas/testapp:${1:-latest}
+echo "Building $TAG"
+
+PULL=
+PUSH=false
+
+while (($#)); do
+  case $1 in
+    --pull)
+      PULL="--pull"
+      ;;
+    --push)
+      PUSH=true
+      ;;
+    *)
+      echo "unknown argument: $1" >&2
+      exit 2
+  esac
+  shift
+done
+
+docker build --tag $TAG $PULL .
+
+echo "Built $TAG"
+
+if [ "$PUSH" == "true" ]; then
+  docker push $TAG
+fi
