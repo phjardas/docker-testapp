@@ -1,10 +1,10 @@
 {
   "name": "docker-testapp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple web server that outputs information about the server and the request.",
   "license": "MIT",
   "repository": {
-  	"type": "git",
+    "type": "git",
     "url": "https://github.com/phjardas/docker-testapp"
   },
   "scripts": {
